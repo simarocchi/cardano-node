@@ -14,13 +14,16 @@ tasks:
 
   run_podman_compose:
     cmds:
-      # - task: install_python
-      # - task: install_podman
-      # - task: pull_container_cardano
-      # - podman volume create cardano_node-db
-      # - podman volume create cardano_node-ipc
-      # - podman network create cardano_default 
       - podman-compose up
+
+  install_podman_compose:
+    cmds:
+      - task: install_python
+      - task: install_podman
+      - task: pull_container_cardano
+      - podman volume create cardano_node-db
+      - podman volume create cardano_node-ipc
+      - podman network create cardano_default 
 
   pull_container_cardano:
     cmds:
