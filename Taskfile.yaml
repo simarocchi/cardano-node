@@ -1,0 +1,45 @@
+version: '3'
+
+env:
+  PYTHON_VER: 3.11
+  CARDANO_NODE_VERSION: 8.1.2
+  CARDANO_SUBMIT_API_VERSION: 8.1.2
+  NETWORK: mainnet
+
+tasks:
+  hello:
+    cmds:
+      - echo 'Hello World from Task!'
+    silent: true
+
+  run_podman_compose:
+    cmds:
+      # - task: install_python
+      # - task: install_podman
+      # - task: pull_container_cardano
+      # - podman volume create cardano_node-db
+      # - podman volume create cardano_node-ipc
+      # - podman network create cardano_default 
+      - podman-compose up
+
+  pull_container_cardano:
+    cmds:
+      - podman pull docker://inputoutput/cardano-node:$CARDANO_NODE_VERSION
+      - podman pull docker://inputoutput/cardano-submit-api:$CARDANO_NODE_VERSION
+
+  install_podman:
+    cmds:
+      - sudo apt install -y podman
+      - pip$PYTHON_VER install podman-compose
+      - podman run hello-world
+
+  install_python:
+    cmds:
+      - sudo apt -y update 
+      - sudo apt -y upgrade
+      - sudo apt -y install software-properties-common
+      - sudo add-apt-repository -y ppa:deadsnakes/ppa
+      - sudo apt -y update
+      - sudo apt install python$PYTHON_VER
+      - curl -sS https://bootstrap.pypa.io/get-pip.py | python$PYTHON_VER
+
