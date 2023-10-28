@@ -5,6 +5,7 @@ env:
   CARDANO_NODE_VERSION: 8.1.2
   CARDANO_SUBMIT_API_VERSION: 8.1.2
   NETWORK: mainnet
+  # NETWORK: testnet
 
 tasks:
   hello:
@@ -19,7 +20,10 @@ tasks:
   install_podman_compose:
     cmds:
       - task: install_python
+      # FIX BUG PODMAN
+      - jq '.cniVersion = "0.4.0"'  ~/.config/cni/net.d/cardano-node_default.conflist > tmp_file.json && mv tmp_file.json  ~/.config/cni/net.d/cardano-node_default.conflist
       - task: install_podman
+      - task: install_jq
       - task: pull_container_cardano
       - podman volume create cardano_node-db
       - podman volume create cardano_node-ipc
@@ -29,6 +33,10 @@ tasks:
     cmds:
       - podman pull docker://inputoutput/cardano-node:$CARDANO_NODE_VERSION
       - podman pull docker://inputoutput/cardano-submit-api:$CARDANO_NODE_VERSION
+
+  install_jq:
+    cmds:
+      - sudo apt install -y jq
 
   install_podman:
     cmds:
